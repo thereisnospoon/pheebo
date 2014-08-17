@@ -1,3 +1,11 @@
+-- Created by Vertabelo (http://vertabelo.com)
+-- Script type: create
+-- Scope: [tables, references]
+-- Generated at Sat Jul 19 17:08:12 UTC 2014
+
+
+
+
 -- tables
 -- Table: boards
 CREATE TABLE imgboard.boards (
@@ -11,9 +19,9 @@ CREATE TABLE imgboard.images (
     image_id bigserial  NOT NULL,
     sha256 varchar(100)  NOT NULL,
     data bytea  NOT NULL,
-    size int  NOT NULL,
+    size bigint  NOT NULL,
     width int  NOT NULL,
-    heigth int  NOT NULL,
+    height int  NOT NULL,
     CONSTRAINT images_pk PRIMARY KEY (image_id)
 );
 
@@ -26,13 +34,14 @@ CREATE TABLE imgboard.posts (
     image_id bigint  NULL,
     posted_when timestamp  NOT NULL,
     ip varchar(30)  NULL,
+    author varchar(50)  NULL,
     CONSTRAINT posts_pk PRIMARY KEY (post_id)
 );
 
 -- Table: threads
 CREATE TABLE imgboard.threads (
     thread_id bigserial  NOT NULL,
-    is_pinned int  NULL,
+    is_pinned boolean DEFAULT false,
     board_path varchar(10)  NOT NULL,
     CONSTRAINT threads_pk PRIMARY KEY (thread_id)
 );
