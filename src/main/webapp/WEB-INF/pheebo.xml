@@ -17,6 +17,7 @@
 
 
 	<mvc:annotation-driven/>
+
 	<context:component-scan base-package="my.thereisnospoon.pheebo"/>
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -30,7 +31,5 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 
-	<beans>
-		<jee:jndi-lookup id="emf" jndi-name="java:jboss/emf"/>
-	</beans>
+	<jee:jndi-lookup id="emf" jndi-name="java:jboss/emf"/>
 </beans>
