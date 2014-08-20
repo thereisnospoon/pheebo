@@ -6,7 +6,7 @@ import org.junit.Test;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PostTest {
 
@@ -22,6 +22,6 @@ public class PostTest {
 
 		Post post = new Post();
 		post.setMessage("");
-		assertEquals(1, validator.validateProperty(post, "message").size());
+		assertTrue(validator.validateProperty(post, "message").size() > 0);
 	}
 }
