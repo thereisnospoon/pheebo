@@ -7,28 +7,33 @@ import java.io.Serializable;
 @Table(schema = "imgboard", name = "images")
 public class Image implements Serializable {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "image_id")
 	private Long imageId;
+
+	@Column(name = "sha256", updatable = false, nullable = false)
 	private String sha;
+
+	@Column(name = "data", updatable = false, nullable = false)
 	private byte[] data;
+
+	@Column(name = "width", updatable = false, nullable = false)
 	private int width;
+
+	@Column(name = "height", updatable = false, nullable = false)
 	private int height;
+
+	@Column(nullable = false, updatable = false)
 	private long size;
 
 	public Image() {
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "image_id")
 	public Long getImageId() {
 		return imageId;
 	}
 
-	public void setImageId(Long imageId) {
-		this.imageId = imageId;
-	}
-
-	@Column(name = "sha256", updatable = false, nullable = false)
 	public String getSha() {
 		return sha;
 	}
@@ -37,7 +42,7 @@ public class Image implements Serializable {
 		this.sha = sha;
 	}
 
-	@Column(name = "data", updatable = false, nullable = false)
+
 	public byte[] getData() {
 		return data;
 	}
@@ -46,7 +51,7 @@ public class Image implements Serializable {
 		this.data = data;
 	}
 
-	@Column(name = "width", updatable = false, nullable = false)
+
 	public int getWidth() {
 		return width;
 	}
@@ -55,7 +60,7 @@ public class Image implements Serializable {
 		this.width = width;
 	}
 
-	@Column(name = "height", updatable = false, nullable = false)
+
 	public int getHeight() {
 		return height;
 	}
@@ -64,7 +69,7 @@ public class Image implements Serializable {
 		this.height = height;
 	}
 
-	@Column(nullable = false, updatable = false)
+
 	public long getSize() {
 		return size;
 	}

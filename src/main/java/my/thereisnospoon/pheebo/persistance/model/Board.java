@@ -1,6 +1,11 @@
 package my.thereisnospoon.pheebo.persistance.model;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -8,15 +13,22 @@ import java.util.Set;
 @Table(name = "boards", schema = "imgboard")
 public class Board implements Serializable {
 
+	@Column(name = "description", nullable = true)
+	@Size(max = 100)
 	private String description;
+
+	@Id
+	@Column(name = "path", nullable = false, updatable = true)
+	@NotBlank(message = "Board should have path")
+	@Pattern(regexp = "\\w{1,20}")
 	private String path;
 
+	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
 	private Set<Thread> threads;
 
 	public Board() {
 	}
 
-	@Column(name = "description", nullable = true)
 	public String getDescription() {
 		return description;
 	}
@@ -25,8 +37,7 @@ public class Board implements Serializable {
 		this.description = description;
 	}
 
-	@Id
-	@Column(name = "path", nullable = false, updatable = true)
+
 	public String getPath() {
 		return path;
 	}
@@ -35,7 +46,6 @@ public class Board implements Serializable {
 		this.path = path;
 	}
 
-	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
 	public Set<Thread> getThreads() {
 		return threads;
 	}

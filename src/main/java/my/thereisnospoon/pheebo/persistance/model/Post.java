@@ -1,6 +1,11 @@
 package my.thereisnospoon.pheebo.persistance.model;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,31 +13,45 @@ import java.util.Date;
 @Table(schema = "imgboard", name = "posts")
 public class Post implements Serializable {
 
+	@Id
+	@Column(name = "post_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long postId;
+
+	@Column
+	@Size(max = 30, message = "Header should be less then 30 symbols")
 	private String header;
+
+	@Column(nullable = false)
+	@NotBlank(message = "Message should be nonempty")
+	@Size(min = 1, max = 3000)
 	private String message;
+
+	@Column(name = "ip")
 	private String ip;
+
+	@Column(name = "posted_when", nullable = false)
 	private Date postedWhen;
+
+	@Column(name = "author", nullable = true)
+	@Size(max = 15, message = "Name should be less then 15 symbols")
 	private String author;
 
+	@ManyToOne
+	@JoinColumn(name = "image_id", nullable = true)
 	private Image image;
+
+	@ManyToOne
+	@JoinColumn(name = "thread_id", nullable = false)
 	private Thread thread;
 
 	public Post() {
 	}
 
-	@Id
-	@Column(name = "post_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getPostId() {
 		return postId;
 	}
 
-	public void setPostId(Long postId) {
-		this.postId = postId;
-	}
-
-	@Column
 	public String getHeader() {
 		return header;
 	}
@@ -41,7 +60,6 @@ public class Post implements Serializable {
 		this.header = header;
 	}
 
-	@Column(nullable = false)
 	public String getMessage() {
 		return message;
 	}
@@ -50,7 +68,6 @@ public class Post implements Serializable {
 		this.message = message;
 	}
 
-	@Column(name = "ip")
 	public String getIp() {
 		return ip;
 	}
@@ -59,7 +76,6 @@ public class Post implements Serializable {
 		this.ip = ip;
 	}
 
-	@Column(name = "posted_when", nullable = false)
 	public Date getPostedWhen() {
 		return postedWhen;
 	}
@@ -68,7 +84,6 @@ public class Post implements Serializable {
 		this.postedWhen = postedWhen;
 	}
 
-	@Column(name = "author", nullable = true)
 	public String getAuthor() {
 		return author;
 	}
@@ -77,8 +92,6 @@ public class Post implements Serializable {
 		this.author = author;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "image_id", nullable = true)
 	public Image getImage() {
 		return image;
 	}
@@ -87,8 +100,6 @@ public class Post implements Serializable {
 		this.image = image;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "thread_id", nullable = false)
 	public Thread getThread() {
 		return thread;
 	}

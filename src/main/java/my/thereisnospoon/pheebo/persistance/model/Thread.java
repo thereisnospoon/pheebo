@@ -11,27 +11,28 @@ import java.util.Set;
 @DynamicInsert
 public class Thread implements Serializable {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "thread_id", insertable = false, updatable = false)
 	private Long threadId;
+
+	@Column(name = "is_pinned", columnDefinition = "boolean default false", nullable = false)
 	private Boolean isPinned;
+
+	@ManyToOne
+	@JoinColumn(name = "board_path", nullable = false)
 	private Board board;
 
+	@OneToMany(mappedBy = "thread", fetch = FetchType.EAGER)
 	private Set<Post> posts;
 
 	public Thread() {
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "thread_id", insertable = false, updatable = false)
 	public Long getThreadId() {
 		return threadId;
 	}
 
-	public void setThreadId(Long threadId) {
-		this.threadId = threadId;
-	}
-
-	@Column(name = "is_pinned", columnDefinition = "boolean default false", nullable = false)
 	public Boolean isPinned() {
 		return isPinned;
 	}
@@ -40,8 +41,6 @@ public class Thread implements Serializable {
 		this.isPinned = isPinned;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "board_path", nullable = false)
 	public Board getBoard() {
 		return board;
 	}
@@ -50,7 +49,6 @@ public class Thread implements Serializable {
 		this.board = board;
 	}
 
-	@OneToMany(mappedBy = "thread", fetch = FetchType.EAGER)
 	public Set<Post> getPosts() {
 		return posts;
 	}
