@@ -1,15 +1,28 @@
 package my.thereisnospoon.pheebo.persistance.model;
 
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.SortedSet;
 
 @Entity
 @Table(schema = "imgboard", name = "threads")
 @DynamicInsert
 public class Thread implements Serializable {
+
+	public static class ThreadComparator implements Comparator<Thread> {
+
+		private static final Comparator<Thread> innerComparator = Comparator.comparing(Thread::getCreatedWhen);
+
+		@Override
+		public int compare(Thread o1, Thread o2) {
+			return innerComparator.compare(o2, o1);
+		}
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +36,22 @@ public class Thread implements Serializable {
 	@JoinColumn(name = "board_path", nullable = false)
 	private Board board;
 
-	@OneToMany(mappedBy = "thread", fetch = FetchType.EAGER)
-	private Set<Post> posts;
+	@Column(name = "created_when", nullable = false)
+	private Date createdWhen;
+
+	@OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
+	@SortComparator(value = Post.PostsComparator.class)
+	private SortedSet<Post> posts;
 
 	public Thread() {
+	}
+
+	public Date getCreatedWhen() {
+		return createdWhen;
+	}
+
+	public void setCreatedWhen(Date createdWhen) {
+		this.createdWhen = createdWhen;
 	}
 
 	public Long getThreadId() {
@@ -49,11 +74,7 @@ public class Thread implements Serializable {
 		this.board = board;
 	}
 
-	public Set<Post> getPosts() {
+	public SortedSet<Post> getPosts() {
 		return posts;
-	}
-
-	public void setPosts(Set<Post> posts) {
-		this.posts = posts;
 	}
 }

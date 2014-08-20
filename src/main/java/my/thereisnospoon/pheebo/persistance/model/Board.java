@@ -1,5 +1,6 @@
 package my.thereisnospoon.pheebo.persistance.model;
 
+import org.hibernate.annotations.SortComparator;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.SortedSet;
 
 @Entity
 @Table(name = "boards", schema = "imgboard")
@@ -23,8 +25,9 @@ public class Board implements Serializable {
 	@Pattern(regexp = "\\w{1,20}")
 	private String path;
 
-	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-	private Set<Thread> threads;
+	@OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+	@SortComparator(value = Thread.ThreadComparator.class)
+	private SortedSet<Thread> threads;
 
 	public Board() {
 	}
@@ -46,11 +49,11 @@ public class Board implements Serializable {
 		this.path = path;
 	}
 
-	public Set<Thread> getThreads() {
+	public SortedSet<Thread> getThreads() {
 		return threads;
 	}
 
-	public void setThreads(Set<Thread> threads) {
+	public void setThreads(SortedSet<Thread> threads) {
 		this.threads = threads;
 	}
 

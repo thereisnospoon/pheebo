@@ -43,6 +43,7 @@ CREATE TABLE imgboard.threads (
     thread_id bigserial  NOT NULL,
     is_pinned boolean DEFAULT false,
     board_path varchar(10)  NOT NULL,
+	  created_when timestamp  NOT NULL,
     CONSTRAINT threads_pk PRIMARY KEY (thread_id)
 );
 

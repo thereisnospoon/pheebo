@@ -7,11 +7,22 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
 @Entity
 @Table(schema = "imgboard", name = "posts")
 public class Post implements Serializable {
+
+	public static class PostsComparator implements Comparator<Post> {
+
+		private static final Comparator<Post> innerComparator = Comparator.comparing(Post::getPostedWhen);
+
+		@Override
+		public int compare(Post o1, Post o2) {
+			return innerComparator.compare(o2, o1);
+		}
+	}
 
 	@Id
 	@Column(name = "post_id")
