@@ -29,7 +29,6 @@ CREATE TABLE imgboard.images (
 CREATE TABLE imgboard.posts (
     post_id bigserial  NOT NULL,
     message text  NOT NULL,
-    header varchar(100)  NULL,
     thread_id bigint  NOT NULL,
     image_id bigint  NULL,
     posted_when timestamp  NOT NULL,

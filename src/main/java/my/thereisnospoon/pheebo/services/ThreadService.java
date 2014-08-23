@@ -1,14 +1,14 @@
 package my.thereisnospoon.pheebo.services;
 
-import my.thereisnospoon.pheebo.persistance.model.*;
-import my.thereisnospoon.pheebo.persistance.model.Thread;
+import my.thereisnospoon.pheebo.persistence.model.*;
+import my.thereisnospoon.pheebo.persistence.model.Thread;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,10 +48,10 @@ public class ThreadService {
 	@SuppressWarnings("unchecked")
 	public List<Post> getThreadPreview(Long threadId) {
 
-		List<Post> lastPosts = entityManager.createNamedQuery(getLastThreadPostsQuery).setParameter("id", threadId)
+		List<Post> lastPosts = entityManager.createQuery(getLastThreadPostsQuery).setParameter("id", threadId)
 				.setMaxResults(NUMBER_OF_POSTS_FOR_PREVIEW).getResultList();
 
-		Post headPost = (Post) entityManager.createNamedQuery(getFirstThreadPostsQuery).setMaxResults(1)
+		Post headPost = (Post) entityManager.createQuery(getFirstThreadPostsQuery).setMaxResults(1)
 				.setParameter("id", threadId)
 				.getResultList().get(0);
 
@@ -62,5 +62,18 @@ public class ThreadService {
 		Collections.reverse(lastPosts);
 
 		return lastPosts;
+	}
+
+	public Thread createThread(String header, Post headPost, String board) {
+
+		Thread thread = new Thread();
+		thread.setHeader(header);
+		thread.setBoard(entityManager.find(Board.class, board));
+		thread.setCreatedWhen(new Date());
+		headPost.setPostedWhen(thread.getCreatedWhen());
+		thread.addPost(headPost);
+		thread = entityManager.merge(thread);
+
+		return thread;
 	}
 }

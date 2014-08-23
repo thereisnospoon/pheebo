@@ -1,14 +1,12 @@
-package my.thereisnospoon.pheebo.persistance.model;
+package my.thereisnospoon.pheebo.persistence.model;
 
 import org.hibernate.annotations.SortComparator;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Set;
 import java.util.SortedSet;
 
 @Entity
@@ -51,10 +49,6 @@ public class Board implements Serializable {
 
 	public SortedSet<Thread> getThreads() {
 		return threads;
-	}
-
-	public void setThreads(SortedSet<Thread> threads) {
-		this.threads = threads;
 	}
 
 	@Override

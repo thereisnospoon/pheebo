@@ -1,0 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<div class="board_header">
+	Boards:
+	<c:forEach var="board" items="${boardService.allBoards}">
+		<a href="/${board.path}">${board.path}</a>
+	</c:forEach>
+</div>

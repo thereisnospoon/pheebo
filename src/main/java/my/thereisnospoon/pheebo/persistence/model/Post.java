@@ -1,10 +1,8 @@
-package my.thereisnospoon.pheebo.persistance.model;
+package my.thereisnospoon.pheebo.persistence.model;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -20,18 +18,16 @@ public class Post implements Serializable {
 
 		@Override
 		public int compare(Post o1, Post o2) {
-			return innerComparator.compare(o2, o1);
+			return innerComparator.compare(o1, o2);
 		}
 	}
+
+	public static final PostsComparator COMPARATOR = new PostsComparator();
 
 	@Id
 	@Column(name = "post_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long postId;
-
-	@Column
-	@Size(max = 30, message = "Header should be less then 30 symbols")
-	private String header;
 
 	@Column(nullable = false)
 	@NotBlank(message = "Message should be nonempty")
@@ -61,14 +57,6 @@ public class Post implements Serializable {
 
 	public Long getPostId() {
 		return postId;
-	}
-
-	public String getHeader() {
-		return header;
-	}
-
-	public void setHeader(String header) {
-		this.header = header;
 	}
 
 	public String getMessage() {

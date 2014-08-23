@@ -1,4 +1,4 @@
-package my.thereisnospoon.pheebo.persistance.model;
+package my.thereisnospoon.pheebo.persistence.model;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

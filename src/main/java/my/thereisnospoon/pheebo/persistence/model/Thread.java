@@ -1,13 +1,15 @@
-package my.thereisnospoon.pheebo.persistance.model;
+package my.thereisnospoon.pheebo.persistence.model;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 @Table(schema = "imgboard", name = "threads")
@@ -39,9 +41,13 @@ public class Thread implements Serializable {
 	@Column(name = "created_when", nullable = false)
 	private Date createdWhen;
 
-	@OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
+	@Column(name = "header", nullable = false)
+	@Size(min = 3, max = 30)
+	private String header;
+
+	@OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@SortComparator(value = Post.PostsComparator.class)
-	private SortedSet<Post> posts;
+	private SortedSet<Post> posts = new TreeSet<>(Post.COMPARATOR);
 
 	public Thread() {
 	}
@@ -76,5 +82,18 @@ public class Thread implements Serializable {
 
 	public SortedSet<Post> getPosts() {
 		return posts;
+	}
+
+	public String getHeader() {
+		return header;
+	}
+
+	public void setHeader(String header) {
+		this.header = header;
+	}
+
+	public void addPost(Post post) {
+		posts.add(post);
+		post.setThread(this);
 	}
 }

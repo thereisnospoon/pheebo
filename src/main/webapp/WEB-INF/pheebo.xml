@@ -21,12 +21,15 @@
 
 
 	<mvc:annotation-driven/>
-	<aop:aspectj-autoproxy/>
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
 	<context:component-scan base-package="my.thereisnospoon.pheebo"/>
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
 		<property name="prefix" value="/WEB-INF/views/"/>
 		<property name="suffix" value=".jsp"/>
+		<property name="exposeContextBeansAsAttributes" value="true"/>
 	</bean>
 
 	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
