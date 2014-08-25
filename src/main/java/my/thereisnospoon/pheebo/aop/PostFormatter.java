@@ -28,7 +28,7 @@ public class PostFormatter {
 		String message = post.getMessage();
 		message = StringEscapeUtils.escapeHtml4(message);
 		message = Pattern.compile("\n", Pattern.DOTALL).matcher(message).replaceAll("<br/>");
-		message = Pattern.compile("[ \t]", Pattern.DOTALL).matcher(message).replaceAll("&nbsp");
+		message = Pattern.compile("[ \t]", Pattern.DOTALL).matcher(message).replaceAll("&nbsp;");
 
 		log.debug("Formatted message: {}", message);
 
