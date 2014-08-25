@@ -44,7 +44,7 @@ public class Thread implements Serializable {
 	private Date createdWhen;
 
 	@Column(name = "header", nullable = false)
-	@Size(min = 3, max = 60)
+	@Size(min = 1, max = 60)
 	private String header;
 
 	@JsonIgnore
