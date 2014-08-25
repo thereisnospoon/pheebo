@@ -24,7 +24,6 @@ public class PostService {
 
 		post.setThread(entityManager.find(Thread.class, threadId));
 		post.setPostedWhen(new Date());
-		entityManager.merge(post);
-		return post;
+		return entityManager.merge(post);
 	}
 }

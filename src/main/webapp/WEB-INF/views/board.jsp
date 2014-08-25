@@ -5,7 +5,7 @@
 <head>
 	<title>/${board.path}</title>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="/resources/css/thread.css">
+	<link rel="stylesheet" type="text/css" href="/resources/css/main.css">
 </head>
 <body>
 <div class="content">
@@ -29,7 +29,12 @@
 		</div>
 	</c:forEach>
 	<%@include file="pages.jspf" %>
-	<%@include file="createThread.jspf" %>
+	<div class="post_form">
+		<input type="text" placeholder="Thread theme (less then 60 symbols)">
+		<textarea placeholder="Message text"></textarea>
+		<div id="send-btn">Send</div>
+		<div id="post_errors"></div>
+	</div>
 	<%@include file="footer.jspf" %>
 </div>
 </body>

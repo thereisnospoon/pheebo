@@ -1,12 +1,12 @@
-<%@ page import="my.thereisnospoon.pheebo.aop.HitCounter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Pheebo</title>
+	<link rel="stylesheet" type="text/css" href="/resources/css/main.css">
 </head>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <body>
-	<h1>Hits: <%= HitCounter.hits.toString() %></h1>
+<%@include file="boards.jspf"%>
+<%@include file="footer.jspf"%>
 </body>
 </html>

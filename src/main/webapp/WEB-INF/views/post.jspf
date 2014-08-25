@@ -3,7 +3,7 @@
 <div class="post" id="post_${post.postId}">
 	<div class="post_header">
 		<a href="/${post.thread.board.path}/thread/${post.thread.threadId}#post_${post.postId}">#${post.postId}</a>
-		 ${post.postedWhen}
+		<span class="post_date"> ${post.postedWhen.time}</span>
 	</div>
 	<blockquote class="post_message">
 		${post.message}

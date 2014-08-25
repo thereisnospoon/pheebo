@@ -39,4 +39,6 @@
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 
 	<jee:jndi-lookup id="emf" jndi-name="java:jboss/emf"/>
+
+	<bean id="jacksonMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
 </beans>

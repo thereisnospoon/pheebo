@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import my.thereisnospoon.pheebo.persistence.model.Post;
 import my.thereisnospoon.pheebo.persistence.model.Thread;
 import my.thereisnospoon.pheebo.services.BoardService;
+import my.thereisnospoon.pheebo.services.JsonMapperService;
 import my.thereisnospoon.pheebo.services.ThreadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collections;
@@ -27,6 +25,10 @@ public class BoardController {
 
 	public static final int THREADS_PER_PAGE = 8;
 	private static final Logger log = LoggerFactory.getLogger(BoardController.class);
+
+	@Autowired
+	private JsonMapperService mapperService;
+
 	@Autowired
 	private ThreadService threadService;
 
@@ -67,7 +69,8 @@ public class BoardController {
 		return "board";
 	}
 
-	@RequestMapping(value = "/{board}/thread", method = RequestMethod.POST)
+	@RequestMapping(value = "/{board}/thread", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@ResponseBody
 	public String createThread(@PathVariable String board, @Valid Post post, BindingResult bindingResult,
 							   @RequestParam("header") String header) {
 
@@ -75,12 +78,12 @@ public class BoardController {
 
 		if (!bindingResult.hasErrors()) {
 
-			Long threadId = threadService.createThread(header, post, board).getThreadId();
+			Thread thread = threadService.createThread(header, post, board);
 
-			log.debug("New thread id = {}", threadId);
+			log.debug("New thread id = {}", thread.getThreadId());
 
-			return "redirect:/{board}/thread/" + threadId;
+			return mapperService.getJson(thread);
 		}
-		return "redirect:/{board}";
+		return "{\"error\": \"something went wrong\"}";
 	}
 }

@@ -1,11 +1,10 @@
 package my.thereisnospoon.pheebo.controllers;
 
 import my.thereisnospoon.pheebo.persistence.model.Post;
+import my.thereisnospoon.pheebo.persistence.model.Thread;
+import my.thereisnospoon.pheebo.services.JsonMapperService;
 import my.thereisnospoon.pheebo.services.PostService;
 import my.thereisnospoon.pheebo.services.ThreadService;
-import my.thereisnospoon.pheebo.persistence.model.Thread;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +13,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
 
 @Controller
 @Transactional
 public class ThreadController {
+
+	@Autowired
+	private JsonMapperService mapperService;
 
 	@Autowired
 	private ThreadService threadService;
@@ -40,12 +42,14 @@ public class ThreadController {
 		return "thread";
 	}
 
-	@RequestMapping(value = "/{board}/thread/{threadId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/thread/{threadId}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@ResponseBody
 	public String postMessage(@PathVariable Long threadId, @Valid Post post, BindingResult bindingResult) {
 
+
 		if (!bindingResult.hasErrors()) {
-			postService.storePost(post, threadId);
+			return mapperService.getJson(postService.storePost(post, threadId));
 		}
-		return "redirect:/{board}/thread/{threadId}";
+		return "{\"error\": \"not valid\"}";
 	}
 }

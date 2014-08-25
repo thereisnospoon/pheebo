@@ -1,5 +1,6 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SortComparator;
 
@@ -34,6 +35,7 @@ public class Thread implements Serializable {
 	@Column(name = "is_pinned", columnDefinition = "boolean default false", nullable = false)
 	private Boolean isPinned;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "board_path", nullable = false)
 	private Board board;
@@ -42,9 +44,10 @@ public class Thread implements Serializable {
 	private Date createdWhen;
 
 	@Column(name = "header", nullable = false)
-	@Size(min = 3, max = 30)
+	@Size(min = 3, max = 60)
 	private String header;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@SortComparator(value = Post.PostsComparator.class)
 	private SortedSet<Post> posts = new TreeSet<>(Post.COMPARATOR);

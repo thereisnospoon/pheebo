@@ -1,5 +1,6 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -48,6 +49,7 @@ public class Post implements Serializable {
 	@JoinColumn(name = "image_id", nullable = true)
 	private Image image;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "thread_id", nullable = false)
 	private Thread thread;
