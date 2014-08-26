@@ -110,9 +110,6 @@
 				<groupId>org.wildfly.plugins</groupId>
 				<artifactId>wildfly-maven-plugin</artifactId>
 				<version>1.0.2.Final</version>
-				<configuration>
-					<jboss-home>C:\Users\nagrizolich\Desktop\wildfly-8.1.0.Final</jboss-home>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
