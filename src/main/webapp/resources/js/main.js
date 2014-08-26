@@ -31,6 +31,19 @@ function ph_thread() {
 		errors.text('');
 	}
 
+	(function fileAttachment() {
+
+		var fileInputElement = $('form input[type=file]');
+		$('.file_upload').click(function() {
+			fileInputElement.trigger('click');
+		});
+
+		fileInputElement.change(function() {
+
+			$('.file_upload span').text(fileInputElement[0].files[0].name);
+		});
+	})();
+
 	function sendPost(thread, messageText, lastPostId) {
 
 		$.post('/thread/' + thread + "?lastPostId=" + lastPostId, {message: messageText}, function (data) {

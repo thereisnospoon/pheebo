@@ -137,6 +137,21 @@ div.post {
     font-family: Sans;
 }
 
+.file_upload {
+    position: relative;
+    float: left;
+    margin-left: 1em;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    border: solid 1px #567ca1;
+    color: #d5dee7;
+}
+
+.file_upload:hover {
+    text-shadow: 0 0 0.005em;
+    box-shadow: 0 0 0.1em;
+}
+
 #send-btn {
     box-sizing: border-box;
     margin: 0.1em 0 0.3em 0.7em;
@@ -190,4 +205,9 @@ div.post {
     margin: 0.1em 1em 0.1em 0.7em;
     color: #e53030;
     text-shadow: 0 0 0.01em;
+}
+
+input[type=file] {
+    position: absolute;
+    top: -100em;
 }

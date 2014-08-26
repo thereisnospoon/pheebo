@@ -40,5 +40,9 @@
 
 	<jee:jndi-lookup id="emf" jndi-name="java:jboss/emf"/>
 
+	<bean id="multipartResolver"
+	      class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+	</bean>
+
 	<bean id="jacksonMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
 </beans>
