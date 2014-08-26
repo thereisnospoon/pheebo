@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -25,5 +26,14 @@ public class PostService {
 		post.setThread(entityManager.find(Thread.class, threadId));
 		post.setPostedWhen(new Date());
 		return entityManager.merge(post);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Post> getPostsAfter(Long postId, Long threadId) {
+
+		return entityManager.createQuery("select p from Post p where p.thread.threadId = :threadId and p.postId > :lastPostId order by postId")
+				.setParameter("lastPostId", postId)
+				.setParameter("threadId", threadId)
+				.getResultList();
 	}
 }

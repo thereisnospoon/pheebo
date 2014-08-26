@@ -4,13 +4,19 @@ function ph_thread() {
 
 	function formatDates() {
 
-		$('.post_date').each(function() {
+		$('.post_date').each(function () {
 
 			var dateSpan = $(this);
 			dateSpan.text($.format.date(new Date(parseInt(dateSpan.text())), formatting));
 		});
 	}
+
 	formatDates();
+
+	function getPostId(postElement) {
+
+		return postElement.attr('id').match(/\d+/)[0];
+	}
 
 	(function hideFormButtonIfHomePage() {
 
@@ -25,27 +31,35 @@ function ph_thread() {
 		errors.text('');
 	}
 
-	function sendPost(thread, messageText) {
+	function sendPost(thread, messageText, lastPostId) {
 
-		$.post('/thread/' + thread, {message: messageText}, function(data) {
+		$.post('/thread/' + thread + "?lastPostId=" + lastPostId, {message: messageText}, function (data) {
 
-			var newPost = data;
+
 			var lastPost = $('.post').last();
-			var lastPostId = lastPost.html().match(/post_(\d+)/)[1];
-			var newElement = lastPost.clone();
-			$('.post_message', newElement).text(newPost.message);
-			$('.post_date', newElement).text($.format.date(newPost.postedWhen, formatting));
-			var a = $('.post_header a', newElement).first();
-			var newHTML = a.html().replace(new RegExp(lastPostId), newPost.postId);
-			var href = a.attr('href').replace(new RegExp(lastPostId), newPost.postId);
-			a.html(newHTML);
-			a.attr('href', href);
 
-			clearErrors();
+			for (var i = 0; i < data.length; i++) {
 
-			$('.post_form textarea').val('');
+				var newPost = data[i];
+				var lastPostId = getPostId(lastPost);
+				var newElement = lastPost.clone();
 
-			lastPost.after(newElement);
+				newElement.attr('id', newElement.attr('id').replace(new RegExp(lastPostId), newPost.postId));
+				$('.post_message', newElement).html(newPost.message);
+				$('.post_date', newElement).text($.format.date(newPost.postedWhen, formatting));
+				var a = $('.post_header a', newElement).first();
+				var newHTML = a.html().replace(new RegExp(lastPostId), newPost.postId);
+				var href = a.attr('href').replace(new RegExp(lastPostId), newPost.postId);
+				a.html(newHTML);
+				a.attr('href', href);
+
+				clearErrors();
+
+				$('.post_form textarea').val('');
+
+				lastPost.after(newElement);
+				lastPost = newElement;
+			}
 			$("html, body").animate({ scrollTop: $(document).height() }, 1000);
 		});
 	}
@@ -53,7 +67,7 @@ function ph_thread() {
 	function createThread(board, messageText, headerText) {
 
 		var thread = {header: headerText, message: messageText};
-		$.post('/' + board + '/thread', thread, function(data) {
+		$.post('/' + board + '/thread', thread, function (data) {
 
 			if (!data.error) {
 				window.location = '/' + board + '/thread/' + data.threadId;
@@ -82,7 +96,7 @@ function ph_thread() {
 
 	formControl.text(btnTextWhenHidden);
 
-	formControl.bind("click", function() {
+	formControl.bind("click", function () {
 
 		var postForm = $('.post_form').first();
 
@@ -96,7 +110,7 @@ function ph_thread() {
 		}
 	});
 
-	$('#send-btn').click(function() {
+	$('#send-btn').click(function () {
 
 		var textArea = $('.post_form textarea').first();
 		var messageText = textArea.val();
@@ -110,7 +124,7 @@ function ph_thread() {
 
 		var threadId = isPostForm();
 		if (threadId) {
-			sendPost(threadId, messageText);
+			sendPost(threadId, messageText, getPostId($('.post').last()));
 		} else {
 
 			var header = $('.post_form input').first().val();

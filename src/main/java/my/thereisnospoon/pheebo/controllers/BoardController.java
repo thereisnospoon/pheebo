@@ -1,6 +1,5 @@
 package my.thereisnospoon.pheebo.controllers;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import my.thereisnospoon.pheebo.persistence.model.Post;
 import my.thereisnospoon.pheebo.persistence.model.Thread;

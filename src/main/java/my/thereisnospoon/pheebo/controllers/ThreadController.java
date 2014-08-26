@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -44,11 +41,12 @@ public class ThreadController {
 
 	@RequestMapping(value = "/thread/{threadId}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseBody
-	public String postMessage(@PathVariable Long threadId, @Valid Post post, BindingResult bindingResult) {
+	public String postMessage(@PathVariable Long threadId, @Valid Post post, BindingResult bindingResult, @RequestParam Long lastPostId) {
 
 
 		if (!bindingResult.hasErrors()) {
-			return mapperService.getJson(postService.storePost(post, threadId));
+			postService.storePost(post, threadId);
+			return mapperService.getJson(postService.getPostsAfter(lastPostId, threadId));
 		}
 		return "{\"error\": \"not valid\"}";
 	}

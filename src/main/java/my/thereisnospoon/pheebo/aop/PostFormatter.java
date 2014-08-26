@@ -17,10 +17,10 @@ public class PostFormatter {
 	private static final Logger log = LoggerFactory.getLogger(PostFormatter.class);
 
 	/**
-	 * Replaces java spaces and line break characters with html ones.
+	 * Replaces line break characters with html ones and escapes html.
 	 * @param post intercepted post which was passing to controller
 	 */
-	@Before(value = "execution(* my.thereisnospoon.pheebo.controllers.*.*(..)) && args(*, post, *)", argNames = "post")
+	@Before(value = "execution(* my.thereisnospoon.pheebo.controllers.*.*(..)) && args(*, post,..)", argNames = "post")
 	public void replaceBreaks(Post post) {
 
 		log.debug("Controller received post with message {}", post.getMessage());

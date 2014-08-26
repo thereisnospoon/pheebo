@@ -7,6 +7,7 @@ import org.junit.Test;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.junit.Assert.assertTrue;
@@ -39,5 +40,10 @@ public class PostTest {
 		ObjectMapper mapper = new ObjectMapper();
 
 		System.out.println(mapper.writeValueAsString(post));
+
+		Post post2 = new Post();
+		post2.setMessage("Message 2");
+
+		System.out.println(mapper.writeValueAsString(Arrays.asList(post, post2)));
 	}
 }
