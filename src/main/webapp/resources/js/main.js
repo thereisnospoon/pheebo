@@ -62,16 +62,16 @@ function ph_thread() {
 		}
 	}
 
+	function clearAttachment() {
+
+		var fileInput = $('form input[type=file]');
+		fileInput.replaceWith(fileInput.clone(true));
+		var attachElement = $('.file_upload');
+		attachElement.text('Attach image');
+		attachElement.attr('id', null);
+	}
+
 	(function fileAttachment() {
-
-		function clearAttachment() {
-
-			var fileInput = $('form input[type=file]');
-			fileInput.replaceWith(fileInput.clone(true));
-			var attachElement = $('.file_upload');
-			attachElement.text('Attach image');
-			attachElement.attr('id', null);
-		}
 
 		var fileInputElement = $('form input[type=file]');
 		$('.file_upload').click(function() {
@@ -111,7 +111,6 @@ function ph_thread() {
 						}
 						switchElement($('#send-btn'));
 						switchElement($('.file_upload'));
-						clearAttachment();
 					}
 				});
 			})(file);
@@ -125,6 +124,8 @@ function ph_thread() {
 		if (imageId) {
 			postUrl += '&imageId=' + imageId;
 		}
+
+		clearAttachment();
 
 		$.post(postUrl, postData, function (data) {
 

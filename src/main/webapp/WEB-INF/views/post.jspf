@@ -1,11 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="post" id="post_${post.postId}">
-	<div class="post_header">
-		<a href="/${post.thread.board.path}/thread/${post.thread.threadId}#post_${post.postId}">#${post.postId}</a>
-		<span class="post_date"> ${post.postedWhen.time}</span>
-	</div>
-	<blockquote class="post_message">
-		${post.message}
-	</blockquote>
+    <div class="post_header">
+        <a href="/${post.thread.board.path}/thread/${post.thread.threadId}#post_${post.postId}">#${post.postId}</a>
+        <span class="post_date"> ${post.postedWhen.time}</span>
+    </div>
+    <c:if test="${null != post.image.imageId}">
+        <img src="/images/${post.image.imageId}"/>
+    </c:if>
+    <blockquote class="post_message">
+        ${post.message}
+    </blockquote>
 </div>
