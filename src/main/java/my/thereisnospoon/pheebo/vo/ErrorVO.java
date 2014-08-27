@@ -1,10 +1,10 @@
 package my.thereisnospoon.pheebo.vo;
 
-public class Error {
+public class ErrorVO {
 
 	private String error;
 
-	public Error(String error) {
+	public ErrorVO(String error) {
 		this.error = error;
 	}
 

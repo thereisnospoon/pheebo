@@ -3,7 +3,7 @@ package my.thereisnospoon.pheebo.controllers;
 import my.thereisnospoon.pheebo.persistence.model.Image;
 import my.thereisnospoon.pheebo.services.ImageService;
 import my.thereisnospoon.pheebo.services.JsonMapperService;
-import my.thereisnospoon.pheebo.vo.Error;
+import my.thereisnospoon.pheebo.vo.ErrorVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class ImageController {
 		log.debug("File name {} with content type: ", file.getOriginalFilename(), file.getContentType());
 
 		if (!isSupportedType(file)) {
-			return mapperService.getJson(new Error("Unsupported file type"));
+			return mapperService.getJson(new ErrorVO("Unsupported file type"));
 		}
 
 		try {

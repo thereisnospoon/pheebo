@@ -30,9 +30,8 @@ public class Post implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long postId;
 
-	@Column(nullable = false)
-	@NotBlank(message = "Message should be nonempty")
-	@Size(min = 1, max = 3000)
+	@Column(nullable = true)
+	@Size(min = 0, max = 3000, message = "Message should be less then 3000")
 	private String message;
 
 	@Column(name = "ip")

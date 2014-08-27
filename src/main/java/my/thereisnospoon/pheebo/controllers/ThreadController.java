@@ -5,6 +5,7 @@ import my.thereisnospoon.pheebo.persistence.model.Thread;
 import my.thereisnospoon.pheebo.services.JsonMapperService;
 import my.thereisnospoon.pheebo.services.PostService;
 import my.thereisnospoon.pheebo.services.ThreadService;
+import my.thereisnospoon.pheebo.vo.ErrorVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -47,13 +48,15 @@ public class ThreadController {
 	@RequestMapping(value = "/thread/{threadId}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String postMessage(@PathVariable Long threadId, @Valid Post post, BindingResult bindingResult, @RequestParam Long lastPostId,
-	                          @RequestParam(required = false) Long imageId) {
+							  @RequestParam(required = false) Long imageId) {
 
 		if (!bindingResult.hasErrors()) {
 
 			postService.storePost(post, threadId, imageId);
 			return mapperService.getJson(postService.getPostsAfter(lastPostId, threadId));
+		} else {
+			return mapperService.getJson(new ErrorVO(bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage)
+					.reduce("", (s1, s2) -> s1 + "; " + s2)));
 		}
-		return "{\"error\": \"not valid\"}";
 	}
 }

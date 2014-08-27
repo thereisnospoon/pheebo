@@ -28,7 +28,7 @@ CREATE TABLE imgboard.images (
 -- Table: posts
 CREATE TABLE imgboard.posts (
     post_id bigserial  NOT NULL,
-    message text  NOT NULL,
+    message text NULL,
     thread_id bigint  NOT NULL,
     image_id bigint  NULL,
     posted_when timestamp  NOT NULL,

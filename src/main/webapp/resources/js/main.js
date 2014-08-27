@@ -62,11 +62,28 @@ function ph_thread() {
 		}
 	}
 
+	(function imageControl() {
+
+		$('body').on('click', '.post img', function() {
+
+			var el = $(this);
+			var elStyle = el[0].style.maxWidth;
+
+			console.log(elStyle);
+
+			if (elStyle) {
+				el.css('max-width', '');
+			} else {
+				el.css('max-width', '85%');
+			}
+		});
+	})();
+
 	function clearAttachment() {
 
-		var fileInput = $('form input[type=file]');
-		fileInput.replaceWith(fileInput.clone(true));
-		var attachElement = $('.file_upload');
+		console.log('Clear attachment');
+		$('form[action="/files"]')[0].reset();
+		var attachElement = $('.file_upload span');
 		attachElement.text('Attach image');
 		attachElement.attr('id', null);
 	}
@@ -78,7 +95,7 @@ function ph_thread() {
 			fileInputElement.trigger('click');
 		});
 
-		fileInputElement.change(function() {
+		$('body').on('change', 'form input[type=file]', function() {
 
 			var file = fileInputElement[0].files[0];
 			$('.file_upload span').text('Loading..');
@@ -119,13 +136,13 @@ function ph_thread() {
 
 	function sendPost(thread, messageText, lastPostId, imageId) {
 
-		var postData = {message: messageText};
+		console.log('Sending message with text: ' + messageText + ' and image id ' + imageId);
+
+		var postData = {message: !messageText ? '' : messageText};
 		var postUrl = '/thread/' + thread + "?lastPostId=" + lastPostId;
 		if (imageId) {
 			postUrl += '&imageId=' + imageId;
 		}
-
-		clearAttachment();
 
 		$.post(postUrl, postData, function (data) {
 
@@ -137,6 +154,16 @@ function ph_thread() {
 				var newPost = data[i];
 				var lastPostId = getPostId(lastPost);
 				var newElement = lastPost.clone();
+
+				if (newPost.image != null) {
+
+					if ($('img', newElement).length == 0) {
+						$('blockquote', newElement).before($('<img>'));
+					}
+					$('img', newElement).attr('src', '/images/' + newPost.image.imageId);
+				} else {
+					$('img', newElement).remove();
+				}
 
 				newElement.attr('id', newElement.attr('id').replace(new RegExp(lastPostId), newPost.postId));
 				$('.post_message', newElement).html(newPost.message);
@@ -153,6 +180,8 @@ function ph_thread() {
 
 				lastPost.after(newElement);
 				lastPost = newElement;
+
+				clearAttachment();
 			}
 			$("html, body").animate({ scrollTop: $(document).height() }, 1000);
 		});
@@ -212,10 +241,10 @@ function ph_thread() {
 		var textArea = $('.post_form textarea').first();
 		var messageText = textArea.val();
 
-		if (!messageText || messageText.length > 3000) {
+		if ((!messageText || messageText.length > 3000) && !getImageId()) {
 
 			var errors = $('#post_errors');
-			errors.text('Message should be between 1 and 3000 symbols');
+			errors.text('Message should be between 1 and 3000 symbols or contain image');
 			return;
 		}
 
