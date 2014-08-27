@@ -21,7 +21,11 @@ public class PostService {
 		return postId != null ? entityManager.find(Post.class, postId) : null;
 	}
 
-	public Post storePost(Post post, Long threadId) {
+	public Post storePost(Post post, Long threadId, Long imageId) {
+
+		if (imageId != null) {
+			post.setImage(entityManager.find(Image.class, imageId));
+		}
 
 		post.setThread(entityManager.find(Thread.class, threadId));
 		post.setPostedWhen(new Date());

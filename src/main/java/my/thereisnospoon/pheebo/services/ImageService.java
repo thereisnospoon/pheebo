@@ -1,6 +1,8 @@
 package my.thereisnospoon.pheebo.services;
 
 import my.thereisnospoon.pheebo.persistence.model.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +19,14 @@ import java.util.List;
 @Transactional
 public class ImageService {
 
+	private static final Logger log = LoggerFactory.getLogger(ImageService.class);
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
 	public Image storeImage(byte[] data) {
+
+		log.debug("Image size: {} bytes", data.length);
 
 		Image image = new Image();
 		image.setData(data);
@@ -44,7 +50,7 @@ public class ImageService {
 		}
 	}
 
-	public String computeDigest(byte[] data) {
+	public static String computeDigest(byte[] data) {
 
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
@@ -65,5 +71,9 @@ public class ImageService {
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public Image getImage(Long imageId) {
+		return entityManager.find(Image.class, imageId);
 	}
 }

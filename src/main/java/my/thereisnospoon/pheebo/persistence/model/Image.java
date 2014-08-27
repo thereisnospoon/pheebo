@@ -1,5 +1,7 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -15,6 +17,7 @@ public class Image implements Serializable {
 	@Column(name = "sha256", updatable = false, nullable = false)
 	private String sha;
 
+	@JsonIgnore
 	@Column(name = "data", updatable = false, nullable = false)
 	private byte[] data;
 

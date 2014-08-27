@@ -34,6 +34,12 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
+	@RequestMapping("/favicon.ico")
+	@ResponseBody
+	public byte[] stub() {
+		return null;
+	}
+
 	@RequestMapping(value = "/{board}", method = RequestMethod.GET)
 	public String showBoard(@PathVariable String board, Model model) {
 

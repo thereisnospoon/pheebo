@@ -10,8 +10,26 @@ function ph_thread() {
 			dateSpan.text($.format.date(new Date(parseInt(dateSpan.text())), formatting));
 		});
 	}
-
 	formatDates();
+
+	function switchElement(el) {
+
+		if (isDisabled(el)) {
+			el.removeClass('disabled');
+		} else {
+			el.addClass('disabled');
+		}
+	}
+
+	function isDisabled(el) {
+
+		var elClasses =  el.attr('class');
+		if (elClasses) {
+			return null != elClasses.match(/disabled/);
+		} else {
+			return false;
+		}
+	}
 
 	function getPostId(postElement) {
 
@@ -25,13 +43,35 @@ function ph_thread() {
 		}
 	})();
 
+	function setError(message) {
+		$('#post_errors').text(message);
+	}
+
 	function clearErrors() {
 
 		var errors = $('#post_errors');
 		errors.text('');
 	}
 
+	function getImageId() {
+
+		var elId = $('.file_upload span').attr('id');
+		console.log('file upload id ' + elId);
+		if (elId) {
+			return elId.match(/\d+/)[0];
+		}
+	}
+
 	(function fileAttachment() {
+
+		function clearAttachment() {
+
+			var fileInput = $('form input[type=file]');
+			fileInput.replaceWith(fileInput.clone(true));
+			var attachElement = $('.file_upload');
+			attachElement.text('Attach image');
+			attachElement.attr('id', null);
+		}
 
 		var fileInputElement = $('form input[type=file]');
 		$('.file_upload').click(function() {
@@ -40,13 +80,53 @@ function ph_thread() {
 
 		fileInputElement.change(function() {
 
-			$('.file_upload span').text(fileInputElement[0].files[0].name);
+			var file = fileInputElement[0].files[0];
+			$('.file_upload span').text('Loading..');
+			switchElement($('#send-btn'));
+			switchElement($('.file_upload'));
+
+			(function upload(file) {
+
+				var formData = new FormData;
+				formData.append('file', file);
+				$.ajax({
+					type: 'POST',
+					contentType: false,
+					processData: false,
+					url: '/images',
+					data: formData,
+					success: function(data) {
+
+						console.log(data);
+
+						if (data.error) {
+							setError(data.error);
+							clearAttachment();
+						} else {
+
+							var attachElement = $('.file_upload span');
+							attachElement.text(file.name);
+							attachElement.attr('id', 'img_' + data.imageId);
+							clearErrors();
+						}
+						switchElement($('#send-btn'));
+						switchElement($('.file_upload'));
+						clearAttachment();
+					}
+				});
+			})(file);
 		});
 	})();
 
-	function sendPost(thread, messageText, lastPostId) {
+	function sendPost(thread, messageText, lastPostId, imageId) {
 
-		$.post('/thread/' + thread + "?lastPostId=" + lastPostId, {message: messageText}, function (data) {
+		var postData = {message: messageText};
+		var postUrl = '/thread/' + thread + "?lastPostId=" + lastPostId;
+		if (imageId) {
+			postUrl += '&imageId=' + imageId;
+		}
+
+		$.post(postUrl, postData, function (data) {
 
 
 			var lastPost = $('.post').last();
@@ -125,6 +205,9 @@ function ph_thread() {
 
 	$('#send-btn').click(function () {
 
+		if (isDisabled($(this))) {
+			return;
+		}
 		var textArea = $('.post_form textarea').first();
 		var messageText = textArea.val();
 
@@ -137,7 +220,7 @@ function ph_thread() {
 
 		var threadId = isPostForm();
 		if (threadId) {
-			sendPost(threadId, messageText, getPostId($('.post').last()));
+			sendPost(threadId, messageText, getPostId($('.post').last()), getImageId());
 		} else {
 
 			var header = $('.post_form input').first().val();

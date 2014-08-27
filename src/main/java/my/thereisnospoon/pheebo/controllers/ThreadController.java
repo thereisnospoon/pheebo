@@ -46,11 +46,12 @@ public class ThreadController {
 
 	@RequestMapping(value = "/thread/{threadId}", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseBody
-	public String postMessage(@PathVariable Long threadId, @Valid Post post, BindingResult bindingResult, @RequestParam Long lastPostId) {
-
+	public String postMessage(@PathVariable Long threadId, @Valid Post post, BindingResult bindingResult, @RequestParam Long lastPostId,
+	                          @RequestParam(required = false) Long imageId) {
 
 		if (!bindingResult.hasErrors()) {
-			postService.storePost(post, threadId);
+
+			postService.storePost(post, threadId, imageId);
 			return mapperService.getJson(postService.getPostsAfter(lastPostId, threadId));
 		}
 		return "{\"error\": \"not valid\"}";
