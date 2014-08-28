@@ -68,7 +68,7 @@ public class ImageService {
 				image.setWidth(awtImage.getWidth());
 				image.setSize(data.length);
 
-				if (image.getWidth() > 200) {
+				if (image.getWidth() > PREVIEW_WIDTH) {
 					image.setPreview(resizeImage(awtImage, image));
 				} else {
 					image.setPreview(image.getData());
