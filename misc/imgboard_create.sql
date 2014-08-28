@@ -9,77 +9,68 @@
 -- tables
 -- Table: boards
 CREATE TABLE imgboard.boards (
-    path varchar(10)  NOT NULL,
-    description varchar(100)  NULL,
-    CONSTRAINT boards_pk PRIMARY KEY (path)
+	path        VARCHAR(10)  NOT NULL,
+	description VARCHAR(100) NULL,
+	CONSTRAINT boards_pk PRIMARY KEY (path)
 );
 
 -- Table: images
 CREATE TABLE imgboard.images (
-    image_id bigserial  NOT NULL,
-    sha256 varchar(100)  NOT NULL,
-    data bytea  NOT NULL,
-    size bigint  NOT NULL,
-    width int  NOT NULL,
-    height int  NOT NULL,
-    CONSTRAINT images_pk PRIMARY KEY (image_id)
+	image_id BIGSERIAL    NOT NULL,
+	sha256   VARCHAR(100) NOT NULL,
+	data     BYTEA        NOT NULL,
+	preview     BYTEA                ,
+	size     BIGINT       NOT NULL,
+	width    INT          NOT NULL,
+	height   INT          NOT NULL,
+	CONSTRAINT images_pk PRIMARY KEY (image_id)
 );
 
 -- Table: posts
 CREATE TABLE imgboard.posts (
-    post_id bigserial  NOT NULL,
-    message text NULL,
-    thread_id bigint  NOT NULL,
-    image_id bigint  NULL,
-    posted_when timestamp  NOT NULL,
-    ip varchar(30)  NULL,
-    author varchar(50)  NULL,
-    CONSTRAINT posts_pk PRIMARY KEY (post_id)
+	post_id     BIGSERIAL   NOT NULL,
+	message     TEXT        NULL,
+	thread_id   BIGINT      NOT NULL,
+	image_id    BIGINT      NULL,
+	posted_when TIMESTAMP   NOT NULL,
+	ip          VARCHAR(30) NULL,
+	author      VARCHAR(50) NULL,
+	CONSTRAINT posts_pk PRIMARY KEY (post_id)
 );
 
 -- Table: threads
 CREATE TABLE imgboard.threads (
-    thread_id bigserial  NOT NULL,
-    is_pinned boolean DEFAULT false,
-    board_path varchar(10)  NOT NULL,
-	  header varchar(30),
-	  created_when timestamp  NOT NULL,
-    CONSTRAINT threads_pk PRIMARY KEY (thread_id)
+	thread_id          BIGSERIAL   NOT NULL,
+	is_pinned          BOOLEAN DEFAULT FALSE,
+	board_path         VARCHAR(10) NOT NULL,
+	header             VARCHAR(30),
+	created_when       TIMESTAMP   NOT NULL,
+	last_response_date TIMESTAMP,
+	CONSTRAINT threads_pk PRIMARY KEY (thread_id)
 );
-
-
-
 
 
 -- foreign keys
 -- Reference:  posts_images (table: imgboard.posts)
 
 
-ALTER TABLE imgboard.posts ADD CONSTRAINT posts_images 
-    FOREIGN KEY (image_id)
-    REFERENCES imgboard.images (image_id) NOT DEFERRABLE 
-;
+ALTER TABLE imgboard.posts ADD CONSTRAINT posts_images
+FOREIGN KEY (image_id)
+REFERENCES imgboard.images (image_id) NOT DEFERRABLE;
 
 -- Reference:  posts_threads (table: imgboard.posts)
 
 
-ALTER TABLE imgboard.posts ADD CONSTRAINT posts_threads 
-    FOREIGN KEY (thread_id)
-    REFERENCES imgboard.threads (thread_id) NOT DEFERRABLE 
-;
+ALTER TABLE imgboard.posts ADD CONSTRAINT posts_threads
+FOREIGN KEY (thread_id)
+REFERENCES imgboard.threads (thread_id) NOT DEFERRABLE;
 
 -- Reference:  threads_boards (table: imgboard.threads)
 
 
-ALTER TABLE imgboard.threads ADD CONSTRAINT threads_boards 
-    FOREIGN KEY (board_path)
-    REFERENCES imgboard.boards (path) NOT DEFERRABLE 
-;
-
-
-
-
-
+ALTER TABLE imgboard.threads ADD CONSTRAINT threads_boards
+FOREIGN KEY (board_path)
+REFERENCES imgboard.boards (path) NOT DEFERRABLE;
 
 -- End of file.
 

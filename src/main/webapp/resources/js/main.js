@@ -187,9 +187,14 @@ function ph_thread() {
 		});
 	}
 
-	function createThread(board, messageText, headerText) {
+	function createThread(board, messageText, headerText, imageId) {
 
 		var thread = {header: headerText, message: messageText};
+
+		if (imageId) {
+			thread.imageId = imageId;
+		}
+
 		$.post('/' + board + '/thread', thread, function (data) {
 
 			if (!data.error) {
@@ -212,26 +217,29 @@ function ph_thread() {
 
 	$('.post_form').draggable();
 
-	var btnTextWhenHidden = 'Show post form';
-	var btnTextWhenVisible = 'Hide post form';
+	(function bindShowFormButton() {
 
-	var formControl = $('#show_form_btn_holder');
+		var btnTextWhenHidden = 'Show post form';
+		var btnTextWhenVisible = 'Hide post form';
 
-	formControl.text(btnTextWhenHidden);
+		var formControl = $('#show_form_btn_holder');
 
-	formControl.bind("click", function () {
+		formControl.text(btnTextWhenHidden);
 
-		var postForm = $('.post_form').first();
+		formControl.bind("click", function () {
 
-		if (postForm.css('display') != 'none') {
+			var postForm = $('.post_form').first();
 
-			formControl.text(btnTextWhenHidden);
-			postForm.css('display', 'none');
-		} else {
-			formControl.text(btnTextWhenVisible);
-			postForm.css('display', 'initial');
-		}
-	});
+			if (postForm.css('display') != 'none') {
+
+				formControl.text(btnTextWhenHidden);
+				postForm.css('display', 'none');
+			} else {
+				formControl.text(btnTextWhenVisible);
+				postForm.css('display', 'initial');
+			}
+		});
+	})();
 
 	$('#send-btn').click(function () {
 
@@ -261,7 +269,7 @@ function ph_thread() {
 				return;
 			}
 			var board = $('title').text().substr(1);
-			createThread(board, messageText, header);
+			createThread(board, messageText, header, getImageId());
 		}
 	});
 }

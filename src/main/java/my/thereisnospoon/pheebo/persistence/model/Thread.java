@@ -19,11 +19,12 @@ public class Thread implements Serializable {
 
 	public static class ThreadComparator implements Comparator<Thread> {
 
-		private static final Comparator<Thread> innerComparator = Comparator.comparing(Thread::getCreatedWhen);
+		private static final Comparator<Date> innerDateComparator = Comparator.nullsLast((d1, d2) -> d2.compareTo(d1));
+		private static final Comparator<Thread> innerComparator = Comparator.comparing(Thread::getLastResponseDate, innerDateComparator);
 
 		@Override
 		public int compare(Thread o1, Thread o2) {
-			return innerComparator.compare(o2, o1);
+			return innerComparator.compare(o1, o2);
 		}
 	}
 
@@ -47,12 +48,23 @@ public class Thread implements Serializable {
 	@Size(min = 1, max = 60)
 	private String header;
 
+	@Column(name = "last_response_date")
+	private Date lastResponseDate;
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@SortComparator(value = Post.PostsComparator.class)
 	private SortedSet<Post> posts = new TreeSet<>(Post.COMPARATOR);
 
 	public Thread() {
+	}
+
+	public Date getLastResponseDate() {
+		return lastResponseDate;
+	}
+
+	public void setLastResponseDate(Date lastResponseDate) {
+		this.lastResponseDate = lastResponseDate;
 	}
 
 	public Date getCreatedWhen() {

@@ -64,12 +64,17 @@ public class ThreadService {
 		return lastPosts;
 	}
 
-	public Thread createThread(String header, Post headPost, String board) {
+	public Thread createThread(String header, Post headPost, String board, Long imageId) {
+
+		if (imageId != null) {
+			headPost.setImage(entityManager.find(Image.class, imageId));
+		}
 
 		Thread thread = new Thread();
 		thread.setHeader(header);
 		thread.setBoard(entityManager.find(Board.class, board));
 		thread.setCreatedWhen(new Date());
+		thread.setLastResponseDate(thread.getCreatedWhen());
 		headPost.setPostedWhen(thread.getCreatedWhen());
 		thread.addPost(headPost);
 		thread = entityManager.merge(thread);

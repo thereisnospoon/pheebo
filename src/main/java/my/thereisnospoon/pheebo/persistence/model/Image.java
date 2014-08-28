@@ -30,6 +30,10 @@ public class Image implements Serializable {
 	@Column(nullable = false, updatable = false)
 	private long size;
 
+	@JsonIgnore
+	@Column(name = "preview", updatable = false, nullable = false)
+	private byte[] preview;
+
 	public Image() {
 	}
 

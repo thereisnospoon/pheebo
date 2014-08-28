@@ -34,6 +34,12 @@
 		<textarea placeholder="Message text"></textarea>
 		<div id="send-btn">Send</div>
 		<div id="post_errors"></div>
+        <div class="file_upload">
+            <span>Attach image</span>
+        </div>
+        <form action="/files" method="post" enctype="multipart/form-data">
+            <input type="file">
+        </form>
 	</div>
 	<%@include file="footer.jspf" %>
 </div>

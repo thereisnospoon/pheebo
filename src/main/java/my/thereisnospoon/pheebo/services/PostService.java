@@ -27,8 +27,10 @@ public class PostService {
 			post.setImage(entityManager.find(Image.class, imageId));
 		}
 
-		post.setThread(entityManager.find(Thread.class, threadId));
+		Thread thread = entityManager.find(Thread.class, threadId);
 		post.setPostedWhen(new Date());
+		post.setThread(thread);
+		thread.setLastResponseDate(post.getPostedWhen());
 		return entityManager.merge(post);
 	}
 

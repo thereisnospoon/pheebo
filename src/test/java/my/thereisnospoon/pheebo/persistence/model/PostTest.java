@@ -7,8 +7,8 @@ import org.junit.Test;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
 
@@ -26,24 +26,26 @@ public class PostTest {
 
 		Post post = new Post();
 		post.setMessage("");
-		assertTrue(validator.validateProperty(post, "message").size() > 0);
+		assertTrue(validator.validateProperty(post, "message").size() == 0);
 	}
 
 	@Test
-	public void testJSON() throws Exception {
+	public void test() throws Exception {
 
-		Post post = new Post();
-		post.setMessage("Message in post");
-		post.setPostedWhen(new Date());
-		post.setThread(new Thread());
+		Thread t1 = new Thread();
+		Thread t2 = new Thread();
+		Date d1 = new Date();
+		Date d2 = new Date();
+		t1.setLastResponseDate(d2);
+//		t2.setLastResponseDate(d1);
+		List<Thread> t = new LinkedList<>();
+		t.add(t1);
+		t.add(t2);
 
-		ObjectMapper mapper = new ObjectMapper();
+		List<Date> d = new LinkedList<>();
+		d.add(null);
+		d.add(null);
 
-		System.out.println(mapper.writeValueAsString(post));
-
-		Post post2 = new Post();
-		post2.setMessage("Message 2");
-
-		System.out.println(mapper.writeValueAsString(Arrays.asList(post, post2)));
+		Collections.sort(t, new Thread.ThreadComparator());
 	}
 }

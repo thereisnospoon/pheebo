@@ -23,7 +23,7 @@ public class Board implements Serializable {
 	@Pattern(regexp = "\\w{1,20}")
 	private String path;
 
-	@OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
 	@SortComparator(value = Thread.ThreadComparator.class)
 	private SortedSet<Thread> threads;
 

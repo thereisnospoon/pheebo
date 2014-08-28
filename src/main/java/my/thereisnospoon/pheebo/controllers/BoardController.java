@@ -77,13 +77,13 @@ public class BoardController {
 	@RequestMapping(value = "/{board}/thread", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String createThread(@PathVariable String board, @Valid Post post, BindingResult bindingResult,
-							   @RequestParam("header") String header) {
+							   @RequestParam("header") String header, @RequestParam(value = "imageId", required = false) Long imageId) {
 
 		log.debug("Thread's header: {}", header);
 
 		if (!bindingResult.hasErrors()) {
 
-			Thread thread = threadService.createThread(header, post, board);
+			Thread thread = threadService.createThread(header, post, board, imageId);
 
 			log.debug("New thread id = {}", thread.getThreadId());
 
