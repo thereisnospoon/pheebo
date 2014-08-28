@@ -67,9 +67,14 @@ function ph_thread() {
 		$('body').on('click', '.post img', function() {
 
 			var el = $(this);
-			var elStyle = el[0].style.maxWidth;
+			var src = el.attr('src');
 
-			console.log(elStyle);
+			console.log('Image src = ' + src);
+
+			if (src.match(/preview/)) {
+				el.attr('src', '/images/' + src.match(/\d+/)[0]);
+			}
+			var elStyle = el[0].style.maxWidth;
 
 			if (elStyle) {
 				el.css('max-width', '');
@@ -157,10 +162,11 @@ function ph_thread() {
 
 				if (newPost.image != null) {
 
-					if ($('img', newElement).length == 0) {
-						$('blockquote', newElement).before($('<img>'));
+					if ($('img', newElement).length != 0) {
+						$('img', newElement).remove();
 					}
-					$('img', newElement).attr('src', '/images/' + newPost.image.imageId);
+					$('blockquote', newElement).before($('<img>'));
+					$('img', newElement).attr('src', '/images/' + newPost.image.imageId + '?preview=true');
 				} else {
 					$('img', newElement).remove();
 				}
@@ -182,6 +188,7 @@ function ph_thread() {
 				lastPost = newElement;
 
 				clearAttachment();
+				$('.post_form').css('display', 'none');
 			}
 			$("html, body").animate({ scrollTop: $(document).height() }, 1000);
 		});

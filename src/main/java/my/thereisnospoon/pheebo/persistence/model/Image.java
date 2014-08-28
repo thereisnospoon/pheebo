@@ -31,10 +31,18 @@ public class Image implements Serializable {
 	private long size;
 
 	@JsonIgnore
-	@Column(name = "preview", updatable = false, nullable = false)
+	@Column(name = "preview", updatable = false)
 	private byte[] preview;
 
 	public Image() {
+	}
+
+	public byte[] getPreview() {
+		return preview;
+	}
+
+	public void setPreview(byte[] preview) {
+		this.preview = preview;
 	}
 
 	public Long getImageId() {

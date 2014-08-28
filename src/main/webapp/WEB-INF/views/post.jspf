@@ -6,7 +6,7 @@
         <span class="post_date"> ${post.postedWhen.time}</span>
     </div>
     <c:if test="${null != post.image.imageId}">
-        <img src="/images/${post.image.imageId}"/>
+        <img src="/images/${post.image.imageId}?preview=true"/>
     </c:if>
     <blockquote class="post_message">
         ${post.message}

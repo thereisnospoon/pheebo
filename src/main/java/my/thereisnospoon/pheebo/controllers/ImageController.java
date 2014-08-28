@@ -50,7 +50,7 @@ public class ImageController {
 
 	@RequestMapping(value = "{imageId}", method = RequestMethod.GET, produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
 	@ResponseBody
-	public byte[] getImage(@PathVariable Long imageId, HttpServletResponse response) {
+	public byte[] getImage(@PathVariable Long imageId, @RequestParam(value = "preview", required = false) boolean preview) {
 
 		log.debug("Request image with id = {}", imageId);
 
@@ -61,7 +61,11 @@ public class ImageController {
 			log.debug("Size {} bytes", image.getData().length);
 			log.debug("Dimensions: width = {}, height = {}", image.getWidth(), image.getHeight());
 
-			return image.getData();
+			if (!preview) {
+				return image.getData();
+			} else {
+				return image.getPreview();
+			}
 		}
 		return null;
 	}
