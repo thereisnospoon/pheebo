@@ -1,6 +1,7 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SortComparator;
 
@@ -15,6 +16,8 @@ import java.util.TreeSet;
 @Entity
 @Table(schema = "imgboard", name = "threads")
 @DynamicInsert
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Thread implements Serializable {
 
 	public static class ThreadComparator implements Comparator<Thread> {

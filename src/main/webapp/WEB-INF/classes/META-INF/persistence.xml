@@ -12,7 +12,15 @@
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
 			<property name="hibernate.hbm2ddl.auto" value="validate"/>
+			<property name="hibernate.format_sql" value="true"/>
+			
 			<property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/emf" />
+			
+			<property name="hibernate.cache.use_second_level_cache" value="true"/>
+			<property name="hibernate.cache.use_query_cache" value="true"/>
+			<property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
+			<property name="hibernate.transaction.manager_lookup_class"
+					  value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
 		</properties>
 	</persistence-unit>
 </persistence>

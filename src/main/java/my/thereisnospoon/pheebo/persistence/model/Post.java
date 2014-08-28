@@ -1,6 +1,7 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -11,6 +12,8 @@ import java.util.Date;
 
 @Entity
 @Table(schema = "imgboard", name = "posts")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Post implements Serializable {
 
 	public static class PostsComparator implements Comparator<Post> {

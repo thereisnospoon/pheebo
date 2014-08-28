@@ -1,5 +1,6 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.SortComparator;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -11,6 +12,8 @@ import java.util.SortedSet;
 
 @Entity
 @Table(name = "boards", schema = "imgboard")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Board implements Serializable {
 
 	@Column(name = "description", nullable = true)

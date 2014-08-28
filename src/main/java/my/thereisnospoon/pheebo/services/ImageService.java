@@ -67,7 +67,12 @@ public class ImageService {
 				image.setHeight(awtImage.getHeight());
 				image.setWidth(awtImage.getWidth());
 				image.setSize(data.length);
-				image.setPreview(resizeImage(awtImage, image));
+
+				if (image.getWidth() > 200) {
+					image.setPreview(resizeImage(awtImage, image));
+				} else {
+					image.setPreview(image.getData());
+				}
 
 				return entityManager.merge(image);
 			} catch (Exception e) {
