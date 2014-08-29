@@ -35,9 +35,8 @@ public class BoardController {
 	private BoardService boardService;
 
 	@RequestMapping("/favicon.ico")
-	@ResponseBody
-	public byte[] stub() {
-		return null;
+	public String stub() {
+		return "redirect:/resources/favicon.ico";
 	}
 
 	@RequestMapping(value = "/{board}", method = RequestMethod.GET)

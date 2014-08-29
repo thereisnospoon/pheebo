@@ -2,6 +2,7 @@ package my.thereisnospoon.pheebo.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(schema = "imgboard", name = "images")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Image implements Serializable {
 
 	@Id

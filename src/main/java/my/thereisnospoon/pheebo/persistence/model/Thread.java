@@ -1,11 +1,13 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.SortComparator;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -17,7 +19,7 @@ import java.util.TreeSet;
 @Table(schema = "imgboard", name = "threads")
 @DynamicInsert
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Thread implements Serializable {
 
 	public static class ThreadComparator implements Comparator<Thread> {
@@ -40,6 +42,7 @@ public class Thread implements Serializable {
 	private Boolean isPinned;
 
 	@JsonIgnore
+	@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@ManyToOne
 	@JoinColumn(name = "board_path", nullable = false)
 	private Board board;
@@ -55,6 +58,7 @@ public class Thread implements Serializable {
 	private Date lastResponseDate;
 
 	@JsonIgnore
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@OneToMany(mappedBy = "thread", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@SortComparator(value = Post.PostsComparator.class)
 	private SortedSet<Post> posts = new TreeSet<>(Post.COMPARATOR);

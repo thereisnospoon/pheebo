@@ -1,10 +1,12 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.SortComparator;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -13,7 +15,7 @@ import java.util.SortedSet;
 @Entity
 @Table(name = "boards", schema = "imgboard")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Board implements Serializable {
 
 	@Column(name = "description", nullable = true)
@@ -26,6 +28,7 @@ public class Board implements Serializable {
 	@Pattern(regexp = "\\w{1,20}")
 	private String path;
 
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
 	@SortComparator(value = Thread.ThreadComparator.class)
 	private SortedSet<Thread> threads;

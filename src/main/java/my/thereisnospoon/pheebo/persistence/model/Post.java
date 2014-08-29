@@ -1,10 +1,12 @@
 package my.thereisnospoon.pheebo.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -13,7 +15,7 @@ import java.util.Date;
 @Entity
 @Table(schema = "imgboard", name = "posts")
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Post implements Serializable {
 
 	public static class PostsComparator implements Comparator<Post> {
@@ -47,11 +49,13 @@ public class Post implements Serializable {
 	@Size(max = 15, message = "Name should be less then 15 symbols")
 	private String author;
 
+	@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@ManyToOne
 	@JoinColumn(name = "image_id", nullable = true)
 	private Image image;
 
 	@JsonIgnore
+	@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@ManyToOne
 	@JoinColumn(name = "thread_id", nullable = false)
 	private Thread thread;
