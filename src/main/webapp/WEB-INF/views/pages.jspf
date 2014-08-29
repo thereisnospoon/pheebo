@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="pages centred">
 	<p>Pages:
-		<c:forEach var="i" begin="1" end="${totalPages}">
+		<c:forEach var="i" begin="1" end="${totalPages > boardService.maxPages ? boardService.maxPages : totalPages}">
 			<c:choose>
 				<c:when test="${i == page}">
 				<span class="current_page">

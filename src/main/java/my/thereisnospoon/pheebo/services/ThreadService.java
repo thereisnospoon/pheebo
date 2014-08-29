@@ -72,7 +72,7 @@ public class ThreadService {
 
 		Thread thread = new Thread();
 		thread.setHeader(header);
-		thread.setBoard(entityManager.find(Board.class, board));
+		entityManager.find(Board.class, board).addThread(thread);
 		thread.setCreatedWhen(new Date());
 		thread.setLastResponseDate(thread.getCreatedWhen());
 		headPost.setPostedWhen(thread.getCreatedWhen());

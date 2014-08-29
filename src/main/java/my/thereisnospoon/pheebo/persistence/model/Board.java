@@ -61,4 +61,9 @@ public class Board implements Serializable {
 	public String toString() {
 		return "Board: " + path + " (" + description + ")";
 	}
+
+	public void addThread(Thread thread) {
+		threads.add(thread);
+		thread.setBoard(this);
+	}
 }

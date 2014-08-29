@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @Controller
 public class BoardController {
 
-	public static final int THREADS_PER_PAGE = 8;
 	private static final Logger log = LoggerFactory.getLogger(BoardController.class);
 
 	@Autowired
@@ -48,9 +47,7 @@ public class BoardController {
 	@RequestMapping(value = "/{board}/page/{page}", method = RequestMethod.GET)
 	public String showBoardPage(@PathVariable String board, @PathVariable int page, Model model) {
 
-		List<List<Thread>> pages = Lists.partition(threadService.getBoardsThreads(board), THREADS_PER_PAGE);
-
-		log.debug("Board {} threads: {}", board, pages);
+		List<List<Thread>> pages = Lists.partition(threadService.getBoardsThreads(board), BoardService.THREADS_PER_PAGE);
 
 		List<List<Post>> threadPreviews;
 
