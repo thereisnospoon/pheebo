@@ -6,6 +6,7 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:task="http://www.springframework.org/schema/task"
+	   xmlns:websocket="http://www.springframework.org/schema/websocket"
        xmlns="http://www.springframework.org/schema/beans"
 
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -21,7 +22,9 @@
 							http://www.springframework.org/schema/aop
 							http://www.springframework.org/schema/aop/spring-aop.xsd
 							http://www.springframework.org/schema/task
-							http://www.springframework.org/schema/task/spring-task.xsd">
+							http://www.springframework.org/schema/task/spring-task.xsd
+							http://www.springframework.org/schema/websocket
+							http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
 
 	<mvc:annotation-driven/>
@@ -53,4 +56,16 @@
 	<jee:jndi-lookup id="scheduler" jndi-name="java:comp/DefaultManagedScheduledExecutorService"/>
 
 	<task:annotation-driven scheduler="scheduler"/>
+
+	<websocket:message-broker application-destination-prefix="/">
+		<websocket:stomp-endpoint path="/ws/ws/ws">
+			<websocket:sockjs/>
+		</websocket:stomp-endpoint>
+		<websocket:simple-broker prefix="/queue, /topic"/>
+	</websocket:message-broker>
+
+	<bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+		<property name="maxTextMessageBufferSize" value="8192"/>
+		<property name="maxBinaryMessageBufferSize" value="8192"/>
+	</bean>
 </beans>

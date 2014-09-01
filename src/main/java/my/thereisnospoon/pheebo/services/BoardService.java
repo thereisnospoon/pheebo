@@ -23,7 +23,8 @@ public class BoardService {
 	private static final Logger log = LoggerFactory.getLogger(BoardService.class);
 
 	private static final String threadsToDeleteQuery = "select t from Thread t where t.threadId not in (:actualThreadIds)";
-	private static final String getNonObsoleteThreadsQuery = "select thread_id from imgboard.threads order by last_response_date desc limit :maxSize";
+	private static final String getNonObsoleteThreadsQuery = "select thread_id from imgboard.threads " +
+			"where board_path = :board order by last_response_date desc limit :maxSize";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -38,21 +39,33 @@ public class BoardService {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Scheduled(fixedDelay = 60 * 1000)
+	@Scheduled(fixedDelay = 60*60*1000)
 	public void deleteObsoleteThreads() {
 
-		List<Object> resultList = entityManager.createNativeQuery(getNonObsoleteThreadsQuery).setParameter("maxSize", THREADS_PER_PAGE * MAX_PAGES).getResultList();
+		for (Board board : getAllBoards()) {
 
-		log.debug("Result list: {}", resultList);
+			log.debug("Removing obsolete threads for board /{}", board.getPath());
 
-		List<Long> ids = resultList.stream().map(o -> Long.valueOf(o.toString())).collect(Collectors.toList());
-		for (Object o : entityManager.createQuery(threadsToDeleteQuery).setParameter("actualThreadIds", ids).getResultList()) {
+			List<Object> resultList = entityManager.createNativeQuery(getNonObsoleteThreadsQuery)
+					.setParameter("maxSize", THREADS_PER_PAGE * MAX_PAGES)
+					.setParameter("board", board.getPath())
+					.getResultList();
 
-			Thread thread = (Thread) o;
+			log.debug("Actual threads: {}", resultList);
 
-			log.debug("Thread {} will be deleted as obsolete", thread.getThreadId());
+			if (resultList.isEmpty()) {
+				continue;
+			}
 
-			entityManager.remove(thread);
+			List<Long> ids = resultList.stream().map(o -> Long.valueOf(o.toString())).collect(Collectors.toList());
+			for (Object o : entityManager.createQuery(threadsToDeleteQuery).setParameter("actualThreadIds", ids).getResultList()) {
+
+				Thread thread = (Thread) o;
+
+				log.debug("Thread {} will be deleted as obsolete", thread.getThreadId());
+
+				entityManager.remove(thread);
+			}
 		}
 	}
 

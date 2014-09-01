@@ -4,6 +4,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
 <script src="/resources/js/jquery-dateFormat.min.js"></script>
 <script src="/resources/js/main.js"></script>
+<script src="https://raw.githubusercontent.com/jmesnil/stomp-websocket/master/lib/stomp.min.js"></script>
 <div class="board_header">
 	Boards:
 	<c:forEach var="board" items="${boardService.allBoards}">
