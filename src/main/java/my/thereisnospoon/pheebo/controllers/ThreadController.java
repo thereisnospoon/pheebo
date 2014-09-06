@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -34,6 +35,9 @@ public class ThreadController {
 	@Autowired
 	private PostService postService;
 
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
+
 	@RequestMapping("/{board}/thread/{threadId}")
 	public String showThread(@PathVariable String board, @PathVariable Long threadId, Model model) {
 
@@ -53,11 +57,18 @@ public class ThreadController {
 
 		if (!bindingResult.hasErrors()) {
 
-			postService.storePost(post, threadId, imageId);
+			post = postService.storePost(post, threadId, imageId);
+			messagingTemplate.convertAndSend("/topic/thread-" + threadId, post.getPostId());
 			return mapperService.getJson(postService.getPostsAfter(lastPostId, threadId));
 		} else {
 			return mapperService.getJson(new ErrorVO(bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage)
 					.reduce("", (s1, s2) -> s1 + "; " + s2)));
 		}
+	}
+
+	@RequestMapping(value = "/thread/{threadId}", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String getNewPosts(@PathVariable Long threadId, @RequestParam Long lastPostId) {
+		return mapperService.getJson(postService.getPostsAfter(lastPostId, threadId));
 	}
 }

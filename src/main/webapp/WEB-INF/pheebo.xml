@@ -57,10 +57,8 @@
 
 	<task:annotation-driven scheduler="scheduler"/>
 
-	<websocket:message-broker application-destination-prefix="/">
-		<websocket:stomp-endpoint path="/ws/ws/ws">
-			<websocket:sockjs/>
-		</websocket:stomp-endpoint>
+	<websocket:message-broker application-destination-prefix="/app">
+		<websocket:stomp-endpoint path="/stomp/endpoint"/>
 		<websocket:simple-broker prefix="/queue, /topic"/>
 	</websocket:message-broker>
 

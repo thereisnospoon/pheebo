@@ -1,6 +1,7 @@
 function ph_thread() {
 
 	var formatting = 'HH:mm:ss d MMMM, yy';
+	var updateBtn = $('#update-thread');
 
 	function formatDates() {
 
@@ -10,7 +11,50 @@ function ph_thread() {
 			dateSpan.text($.format.date(new Date(parseInt(dateSpan.text())), formatting));
 		});
 	}
+
 	formatDates();
+
+	(function subscribeOnPosts() {
+
+		var stompClient = Stomp.over(new WebSocket("ws://" + getWSHost() + "/stomp/endpoint"));
+
+		function getWSHost() {
+
+			var hostName = location.hostname;
+			if (hostName.match(/localhost/)) {
+				return hostName + ":8080";
+			} else {
+				return hostName + ":8000";
+			}
+		}
+
+		var connectCallback = function () {
+
+			stompClient.subscribe("/topic/thread-" + isPostForm(), function (message) {
+
+				console.log('New post was created with id ' + message.body);
+
+				var count = $('sup', updateBtn);
+				var newMessages = parseInt(count.text());
+				count.text(++newMessages);
+
+				if (newMessages > 0) {
+					updateBtn.css('display', 'block');
+				} else {
+					updateBtn.css('display', 'none');
+				}
+			});
+		};
+
+		stompClient.connect({}, connectCallback);
+
+		updateBtn.click(function () {
+
+			$('sup', updateBtn).text('0');
+			loadNewPosts();
+			updateBtn.css('display', 'none');
+		});
+	})();
 
 	function switchElement(el) {
 
@@ -23,7 +67,7 @@ function ph_thread() {
 
 	function isDisabled(el) {
 
-		var elClasses =  el.attr('class');
+		var elClasses = el.attr('class');
 		if (elClasses) {
 			return null != elClasses.match(/disabled/);
 		} else {
@@ -64,7 +108,7 @@ function ph_thread() {
 
 	(function imageControl() {
 
-		$('body').on('click', '.post img', function() {
+		$('body').on('click', '.post img', function () {
 
 			var el = $(this);
 			var src = el.attr('src');
@@ -96,11 +140,11 @@ function ph_thread() {
 	(function fileAttachment() {
 
 		var fileInputElement = $('form input[type=file]');
-		$('.file_upload').click(function() {
+		$('.file_upload').click(function () {
 			fileInputElement.trigger('click');
 		});
 
-		$('body').on('change', 'form input[type=file]', function() {
+		$('body').on('change', 'form input[type=file]', function () {
 
 			var file = fileInputElement[0].files[0];
 			$('.file_upload span').text('Loading..');
@@ -117,7 +161,7 @@ function ph_thread() {
 					processData: false,
 					url: '/images',
 					data: formData,
-					success: function(data) {
+					success: function (data) {
 
 						console.log(data);
 
@@ -139,6 +183,14 @@ function ph_thread() {
 		});
 	})();
 
+	function loadNewPosts() {
+
+		var lastPostId = getPostId($('.post').last());
+		$.get('/thread/' + isPostForm() + "?lastPostId=" + lastPostId, function (data) {
+			insertNewPosts(data);
+		});
+	}
+
 	function sendPost(thread, messageText, lastPostId, imageId) {
 
 		console.log('Sending message with text: ' + messageText + ' and image id ' + imageId);
@@ -150,48 +202,55 @@ function ph_thread() {
 		}
 
 		$.post(postUrl, postData, function (data) {
+			insertNewPosts(data);
+		});
 
+		// we receive message about new (our) post by STOMP so need to decrement new posts counter
+		var counter = $('sup', updateBtn);
+		counter.text(-1);
+	}
 
-			var lastPost = $('.post').last();
+	function insertNewPosts(data) {
 
-			for (var i = 0; i < data.length; i++) {
+		var lastPost = $('.post').last();
 
-				var newPost = data[i];
-				var lastPostId = getPostId(lastPost);
-				var newElement = lastPost.clone();
+		for (var i = 0; i < data.length; i++) {
 
-				if (newPost.image != null) {
+			var newPost = data[i];
+			var lastPostId = getPostId(lastPost);
+			var newElement = lastPost.clone();
 
-					if ($('img', newElement).length != 0) {
-						$('img', newElement).remove();
-					}
-					$('blockquote', newElement).before($('<img>'));
-					$('img', newElement).attr('src', '/images/' + newPost.image.imageId + '?preview=true');
-				} else {
+			if (newPost.image != null) {
+
+				if ($('img', newElement).length != 0) {
 					$('img', newElement).remove();
 				}
-
-				newElement.attr('id', newElement.attr('id').replace(new RegExp(lastPostId), newPost.postId));
-				$('.post_message', newElement).html(newPost.message);
-				$('.post_date', newElement).text($.format.date(newPost.postedWhen, formatting));
-				var a = $('.post_header a', newElement).first();
-				var newHTML = a.html().replace(new RegExp(lastPostId), newPost.postId);
-				var href = a.attr('href').replace(new RegExp(lastPostId), newPost.postId);
-				a.html(newHTML);
-				a.attr('href', href);
-
-				clearErrors();
-
-				$('.post_form textarea').val('');
-
-				lastPost.after(newElement);
-				lastPost = newElement;
-
-				clearAttachment();
-				$('.post_form').css('display', 'none');
+				$('blockquote', newElement).before($('<img>'));
+				$('img', newElement).attr('src', '/images/' + newPost.image.imageId + '?preview=true');
+			} else {
+				$('img', newElement).remove();
 			}
-			$("html, body").animate({ scrollTop: $(document).height() }, 1000);
-		});
+
+			newElement.attr('id', newElement.attr('id').replace(new RegExp(lastPostId), newPost.postId));
+			$('.post_message', newElement).html(newPost.message);
+			$('.post_date', newElement).text($.format.date(newPost.postedWhen, formatting));
+			var a = $('.post_header a', newElement).first();
+			var newHTML = a.html().replace(new RegExp(lastPostId), newPost.postId);
+			var href = a.attr('href').replace(new RegExp(lastPostId), newPost.postId);
+			a.html(newHTML);
+			a.attr('href', href);
+
+			clearErrors();
+
+			$('.post_form textarea').val('');
+
+			lastPost.after(newElement);
+			lastPost = newElement;
+
+			clearAttachment();
+			$('.post_form').css('display', 'none');
+		}
+		$("html, body").animate({ scrollTop: $(document).height() }, 1000);
 	}
 
 	function createThread(board, messageText, headerText, imageId) {

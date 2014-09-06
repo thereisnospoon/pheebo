@@ -6,6 +6,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
+
 public class PostFormatterTest {
 
 	@Test
